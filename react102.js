@@ -17,11 +17,12 @@ Warning: Failed prop type: You provided a `value` prop to a form field without a
     */
 
 const Card = (props) => {
+  let redictionUrl = 'https://github.com/' + props.login;
   return (
     <div style={{ margin: '1em' }}>
       <img width="75" src={props.avatar_url} />
       <div className="info" style={{ display: 'inline-block', color: 'black', marginLeft: 10}}>
-        <div style={{ fontSize: '1.25em', fontWeight: 'bold' }}>{props.name}</div>
+        <a href={redictionUrl} target='_blank' style={{ fontSize: '1.25em', fontWeight: 'bold' }} >{props.name}</a>
         <div>{props.login}</div>
       </div>
     </div>
@@ -30,47 +31,47 @@ const Card = (props) => {
 
 
 class Form extends React.Component {
-	state = { userName: '' };
-	handleSubmit = (event) => {
-  		event.preventDefault();
+  state = { userName: '' };
+  handleSubmit = (event) => {
+      event.preventDefault();
       axios.get(`https://api.github.com/users/${this.state.userName}`)
       .then(resp => {
-      		this.props.onSubmit(resp.data);
+          this.props.onSubmit(resp.data);
       })
       .catch(err => {
-      		console.log('Call failed');
+          console.log('Call failed');
       });
   };
-	render() {
-			return (
-      			<form onSubmit={this.handleSubmit}>
-            	<input type="text" 
+  render() {
+      return (
+            <form onSubmit={this.handleSubmit}>
+              <input type="text" 
               value={this.state.userName}
               onChange={(event) => this.setState({userName: event.target.value})}
               placeholder="Github Username" required/>
               <button type="submit">Add card</button>
             </form>
       );
-	}
+  }
 }
 
 class App extends React.Component {
 state = {
- 	cards: []};
+  cards: []};
   
   addNewCard = (cardInfo) => {
-  		this.setState(prevState => ({
-      			cards:prevState.cards.concat(cardInfo)
+      this.setState(prevState => ({
+            cards:prevState.cards.concat(cardInfo)
       }))
   };
 render() {
-	return (
-  		<div>
-      	<Form onSubmit={this.addNewCard} />
+  return (
+      <div>
+        <Form onSubmit={this.addNewCard} />
         <Cardlist cards={this.state.cards} />
       </div>
   );
-	}
+  }
 }
 
 const Cardlist = (props) => {
